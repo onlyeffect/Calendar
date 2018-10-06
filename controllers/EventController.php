@@ -75,6 +75,7 @@ class EventController extends Controller
         $model = new Event();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            Yii::$app->session->setFlash('success', 'Событие успешно добавлено');
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -95,6 +96,7 @@ class EventController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            Yii::$app->session->setFlash('success', 'Событие успешно отредактировано');
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -114,6 +116,7 @@ class EventController extends Controller
     {
         $this->findModel($id)->delete();
 
+        Yii::$app->session->setFlash('success', 'Событие успешно удалено');
         return $this->redirect(['index']);
     }
 
