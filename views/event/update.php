@@ -5,7 +5,7 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\models\Event */
 
-$this->title = 'Update Event: ' . $model->title;
+$this->title = 'Изменение события: ' . $model->title;
 $this->params['breadcrumbs'][] = ['label' => 'Events', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->title, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Update';
@@ -18,4 +18,5 @@ $this->params['breadcrumbs'][] = 'Update';
         'model' => $model,
     ]) ?>
 
+    <?= Html::button('Delete', ['id' => 'btnDelete', 'class' => 'btn btn-danger']) ?>
 </div>

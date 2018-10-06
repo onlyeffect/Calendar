@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use Yii;
 use app\models\Event;
+use app\models\Calendar;
 use app\models\EventSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -36,19 +37,15 @@ class EventController extends Controller
     public function actionIndex()
     {
         $events = Event::find()->all();
-        $calendarEvents = [];
+        $calendarEvents = Calendar::makeCalendarEvents($events);
 
-        foreach ($events as $event) {
-            $calendarEvent = new \yii2fullcalendar\models\Event();
-            $calendarEvent->id = $event->id;
-            $calendarEvent->title = $event->title;
-            $calendarEvent->start = $event->date;
-            $calendarEvents[] = $calendarEvent;
-        }
-
+        if (Yii::$app->request->isAjax){
+            return json_encode($calendarEvents);
+        } else {
         return $this->render('index', [
             'calendarEvents' => $calendarEvents,
         ]);
+    }
     }
 
     /**
@@ -69,18 +66,37 @@ class EventController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
+    public function actionCreate($date)
     {
         $model = new Event();
+        $model->date = $date;
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            Yii::$app->session->setFlash('success', 'Событие успешно добавлено');
-            return $this->redirect(['view', 'id' => $model->id]);
+        if (Yii::$app->request->isAjax) {
+            return $this->renderAjax('create', [
+                'model' => $model,
+            ]);
+        }
+    }
+
+    public function actionSave()
+    {
+        if (empty($_POST['title']) || empty($_POST['date'])) {
+            return json_encode(['error' => 'Заполните все поля']);
         }
 
-        return $this->render('create', [
-            'model' => $model,
-        ]);
+        if (Yii::$app->request->isAjax) {
+            $model = (empty($_POST['id'])) ? new Event() : $this->findModel($_POST['id']);
+            $model->title = $_POST['title'];
+            $model->date = $_POST['date'];
+
+            if ($model->save()) {
+                $events = Event::find()->all();
+                $calendarEvents = Calendar::makeCalendarEvents($events);
+                return json_encode($calendarEvents);
+            } else {
+                return json_encode(['error' => 'Что-то пошло не так']);
+            }
+        }
     }
 
     /**
@@ -94,17 +110,8 @@ class EventController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            Yii::$app->session->setFlash('success', 'Событие успешно отредактировано');
-            return $this->redirect(['view', 'id' => $model->id]);
-        }
-
-        if (Yii::$app->request->isAjax){
+        if (Yii::$app->request->isAjax) {
             return $this->renderAjax('update', [
-                'model' => $model,
-            ]);
-        } else {
-            return $this->render('update', [
                 'model' => $model,
             ]);
         }
@@ -117,12 +124,20 @@ class EventController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionDelete($id)
+    public function actionDelete()
     {
-        $this->findModel($id)->delete();
-
-        Yii::$app->session->setFlash('success', 'Событие успешно удалено');
-        return $this->redirect(['index']);
+        if (Yii::$app->request->isAjax) {
+            if (!empty($_POST['id'])) {
+                if($model = $this->findModel($_POST['id'])){
+                    $modelToSend = json_encode(Event::find()->where(['id'=>$_POST['id']])->asArray()->one());
+                    if($model->delete()){
+                        return $modelToSend;
+                    } else {
+                        return json_encode(['error' => 'Что-то пошло не так']);
+                    }
+                }
+            }
+        }
     }
 
     /**
