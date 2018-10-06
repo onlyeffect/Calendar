@@ -43,7 +43,6 @@ class EventController extends Controller
             $calendarEvent->id = $event->id;
             $calendarEvent->title = $event->title;
             $calendarEvent->start = $event->date;
-            $calendarEvent->url = "event/view?id=$event->id";
             $calendarEvents[] = $calendarEvent;
         }
 
@@ -100,9 +99,15 @@ class EventController extends Controller
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
-        return $this->render('update', [
-            'model' => $model,
-        ]);
+        if (Yii::$app->request->isAjax){
+            return $this->renderAjax('update', [
+                'model' => $model,
+            ]);
+        } else {
+            return $this->render('update', [
+                'model' => $model,
+            ]);
+        }
     }
 
     /**

@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\grid\GridView;
+use yii\bootstrap\Modal;
 use yii\web\JsExpression;
 
 /* @var $this yii\web\View */
@@ -20,6 +21,17 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= Html::a('Create Event', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
+    <?php 
+        Modal::begin([
+            'id' => 'modal',
+            'size' => 'modal-lg'
+        ]);
+
+        echo '<div id=\'modalContent\'></div>';
+
+        Modal::end();
+    ?>
+
     <?= 
         yii2fullcalendar\yii2fullcalendar::widget(array(
             'events' => $calendarEvents,
@@ -28,8 +40,11 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             'clientOptions' => [
                 'eventClick' => new JSExpression("function(eventObj) {
-                    window.open(eventObj.url);
-                    return false; // prevents browser from following link in current tab.
+                    $.get('event/update', {'id': eventObj.id}, function(data){
+                        $('#modal').modal('show')
+                        .find('#modalContent')
+                        .html(data);
+                    });
                 }"),
             ],
         ));

@@ -15,7 +15,12 @@ use kartik\datetime\DateTimePicker;
 
     <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'date')->widget(DateTimePicker::className(), []) ?>
+    <?= $form->field($model, 'date')->widget(DateTimePicker::className(), [
+            'pluginOptions' => [
+                'format'=> 'yyyy-m-d hh:ii:00',
+            ],
+        ]);
+    ?>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
