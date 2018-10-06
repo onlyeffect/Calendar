@@ -29,7 +29,7 @@ class Event extends \yii\db\ActiveRecord
     {
         return [
             [['title', 'date'], 'required'],
-            [['date'], 'safe'],
+            [['date'], 'date', 'format' => 'y-m-d H:m'],
             [['title'], 'string', 'max' => 255],
         ];
     }
@@ -41,9 +41,8 @@ class Event extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'title' => 'Title',
-            'text' => 'Text',
-            'date' => 'Date',
+            'title' => 'Событие',
+            'date' => 'Дата',
         ];
     }
 }
