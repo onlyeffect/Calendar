@@ -30,7 +30,7 @@ class Event extends \yii\db\ActiveRecord
         return [
             [['title', 'date', 'time'], 'required'],
             [['date'], 'date', 'format' => 'y-m-d'],
-            [['time'], 'date', 'format' => 'H:i'],
+            [['time'], 'date', 'format' => 'HH:mm'],
             [['title'], 'string', 'max' => 255],
         ];
     }
