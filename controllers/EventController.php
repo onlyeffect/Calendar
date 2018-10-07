@@ -80,7 +80,7 @@ class EventController extends Controller
 
     public function actionSave()
     {
-        if (empty($_POST['title']) || empty($_POST['date'])) {
+        if (empty($_POST['title']) || empty($_POST['date']) || empty($_POST['time'])) {
             return json_encode(['error' => 'Заполните все поля']);
         }
 
@@ -88,6 +88,7 @@ class EventController extends Controller
             $model = (empty($_POST['id'])) ? new Event() : $this->findModel($_POST['id']);
             $model->title = $_POST['title'];
             $model->date = $_POST['date'];
+            $model->time = $_POST['time'];
 
             if ($model->save()) {
                 $events = Event::find()->all();

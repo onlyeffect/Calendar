@@ -34,7 +34,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 'lang' => 'ru',
             ],
             'clientOptions' => [
-                'displayEventTime' => false,
+                'timeFormat' => 'H:mm',
+                'displayEventTime' => true,
                 'eventClick' => new JSExpression("function(eventObj) {
                     $.get('event/update', {'id': eventObj.id}, function(data){
                         $('#modal').modal('show')

@@ -2,7 +2,8 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
-use kartik\datetime\DateTimePicker;
+use kartik\time\TimePicker;
+use kartik\date\DatePicker;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Event */
@@ -18,11 +19,21 @@ use kartik\datetime\DateTimePicker;
 
     <?= $form->field($model, 'title')->textInput(['maxlength' => true, 'id' => 'title']) ?>
 
-    <?= $form->field($model, 'date')->widget(DateTimePicker::className(), [
+    <?= $form->field($model, 'date')->widget(DatePicker::className(), [
+            'type' => DatePicker::TYPE_COMPONENT_APPEND,
             'pluginOptions' => [
-                'format'=> 'yyyy-m-d hh:ii:00',
+                'autoclose'=>true,
+                'format'=> 'yyyy-mm-dd',
             ],
         ]);
+    ?>
+    
+    <?= $form->field($model, 'time')->widget(TimePicker::className(), [
+            'pluginOptions' => [
+                'showSeconds' => false,
+                'showMeridian' => false,
+            ],
+        ]); 
     ?>
 
     <div class="form-group">
@@ -42,6 +53,7 @@ $('#btnSave').on('click', function(){
             id: $('#model_id').val(),
             title: $('#title').val(), 
             date: $('#event-date').val(),
+            time: $('#event-time').val(),
         },
         success: function (data) {
             var data = JSON.parse(data);

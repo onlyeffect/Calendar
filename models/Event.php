@@ -28,8 +28,9 @@ class Event extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['title', 'date'], 'required'],
-            [['date'], 'date', 'format' => 'y-m-d h:m:s'],
+            [['title', 'date', 'time'], 'required'],
+            [['date'], 'date', 'format' => 'y-m-d'],
+            [['time'], 'date', 'format' => 'H:i'],
             [['title'], 'string', 'max' => 255],
         ];
     }
@@ -43,6 +44,7 @@ class Event extends \yii\db\ActiveRecord
             'id' => 'ID',
             'title' => 'Событие',
             'date' => 'Дата',
+            'time' => 'Время',
         ];
     }
 }
